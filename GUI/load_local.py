@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from pathlib import Path
 from typing import Tuple, List
+from load_web import load, run
 
 def load_credential() -> List[str]:
     list_txt = []
