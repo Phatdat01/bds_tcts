@@ -90,6 +90,14 @@ def load_pages(driver: WebDriver, cre: json) -> int:
         try:
             time.sleep(6.7)
             pages = wait_element(driver=driver,timeout=30,key="total",by="name")
+            ward_selection = driver.find_elements(By.NAME,value="xaId")
+            for ward in ward_selection:
+                try:
+                    need_select = Select(ward)
+                    need_select.select_by_visible_text(cre["ward"])
+                except:
+                    pass
+            time.sleep(3)
             pages = driver.find_element(By.NAME, value="total").text
             return int(pages)
         except:

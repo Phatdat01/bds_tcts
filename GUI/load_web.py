@@ -25,8 +25,11 @@ def load(
         "ward": ward,
         "time_delay": time_delay
     }
-
-    driver, info = access_to_ward(cre = cre)
+    try:
+        if driver:
+            driver, info = access_to_ward(cre=cre, reload=True, driver=driver)
+    except:
+        driver, info = access_to_ward(cre = cre)
     try:
         page['values'] = list(range(1,info+1))
         page.current(0)

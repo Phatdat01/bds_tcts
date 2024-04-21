@@ -49,5 +49,21 @@ def app():
     ]
 
     win.bind("<Control-KeyPress-q>", lambda event: close_application(win=win))
+    win.bind("<Control-KeyPress-e>", lambda event: load(
+            name=user_name.get(), pw = password.get(), 
+            url=url_text, web= web.get(),
+            path=path.get(),ward=ward.get(),
+            time_delay=int(time_delay.get()),
+            page=page, run_action=run_action
+        )
+    )
+    win.bind("<Control-KeyPress-r>", lambda event: [
+        run(
+            path=path.get(),ward=ward.get(),
+            time_delay=int(time_delay.get()),
+            page=page
+        ),
+        disable_run(run_action)
+    ])
     win.eval('tk::PlaceWindow . center')
     win.mainloop()
