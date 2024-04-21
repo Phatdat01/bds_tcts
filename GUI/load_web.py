@@ -33,6 +33,7 @@ def load(
         page['state'] = 'normal'
         run_action['state'] = 'normal'
         run_action['bg'] = 'Green'
+        run_action['cursor'] = 'hand2'
     except:
         messagebox.showerror("showerror", info)
         driver.quit()
@@ -51,9 +52,11 @@ def run(
         "ward": ward,
         "time_delay": time_delay
     }
-    crawl(
-        driver=driver,
-        cre=cre
-    )
-
+    try:
+        crawl(
+            driver=driver,
+            cre=cre
+        )
+    except Exception as e:
+        messagebox.showerror("showerror", e)
     

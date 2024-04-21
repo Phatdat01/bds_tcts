@@ -137,62 +137,66 @@ def access(driver: WebDriver, cre: json):
     root = cre["path"].replace("\\", "\\\\")
     ward = cre["ward"]
     page = cre["page"]
-    items = wait_element(driver=driver, timeout= 30, key="item-hosodiachinh", by="class")
-    items = driver.find_elements(By.CLASS_NAME, value="item-hosodiachinh")
+    while page != cre["last_page"]:
+        time.sleep(3)
+        items = wait_element(driver=driver, timeout= 30, key="item-hosodiachinh", by="class")
+        items = driver.find_elements(By.CLASS_NAME, value="item-hosodiachinh")
 
-    start = change_id(id=0,root=root, ward=ward, page=page)
-    for id in range(start, len(items)):
-        items[id].find_element(By.CLASS_NAME, value="title").click()
-        time.sleep(2.7)
-        try:
-            ## Click to each file
-            files = wait_element(driver=driver, timeout= 10, key="list-group-item.file-hosoquet", by="class")
-            if files:
-                try:
-                    files = driver.find_elements(By.CLASS_NAME, value="list-group-item.file-hosoquet")
-                    files_with_handles = list(enumerate(files, start=1))
+        start = change_id(id=0,root=root, ward=ward, page=page)
+        for id in range(start, len(items)):
+            items[id].find_element(By.CLASS_NAME, value="title").click()
+            time.sleep(2.7)
+            try:
+                ## Click to each file
+                files = wait_element(driver=driver, timeout= 10, key="list-group-item.file-hosoquet", by="class")
+                if files:
+                    try:
+                        files = driver.find_elements(By.CLASS_NAME, value="list-group-item.file-hosoquet")
+                        files_with_handles = list(enumerate(files, start=1))
 
-                    ## Open
-                    for files_with_handle in files_with_handles:
-                        open_file(args=files_with_handle,driver=driver)
-                    time.sleep(cre['time_delay'])
-                    
-                    ## Download
-                    for files_with_handle in files_with_handles:
-                        download_file(args=files_with_handle,driver=driver)
-                    time.sleep(1)
+                        ## Open
+                        for files_with_handle in files_with_handles:
+                            open_file(args=files_with_handle,driver=driver)
+                        time.sleep(cre['time_delay'])
+                        
+                        ## Download
+                        for files_with_handle in files_with_handles:
+                            download_file(args=files_with_handle,driver=driver)
+                        time.sleep(1)
 
-                    # close web
-                    for files_with_handle in files_with_handles:   
-                        close_file(driver=driver)
-                    time.sleep(2)
+                        # close web
+                        for files_with_handle in files_with_handles:   
+                            close_file(driver=driver)
+                        time.sleep(2)
 
 
-                    srcs = get_by_latest_file(num=len(files), download_path=cre["path"])
+                        srcs = get_by_latest_file(num=len(files), download_path=cre["path"])
 
-                    id = change_id(id=id, root=root, ward=ward,page=page)
-                    # move
-                    for src in srcs:
-                    
-                        move_to_des(
-                            root=root,
-                            ward=ward,
-                            page= page,
-                            id=str(id),
-                            file=src
-                        )
-                    if  len(driver.window_handles) >1:
-                        for window_handle in range (1, len(driver.window_handles)):
-                            close_file(driver=driver, id=window_handle)
-                    driver.window_handles = [driver.window_handles[0]]
-                    
-                except:
-                    pass
-        except:
-            pass
-        back = driver.find_element(By.ID, value="btnCloseViewDetail")
-        back.click()
-        item = wait_element(driver=driver, timeout= 15, key="item-hosodiachinh", by="class")
-        
+                        id = change_id(id=id, root=root, ward=ward,page=page)
+                        # move
+                        for src in srcs:
+                        
+                            move_to_des(
+                                root=root,
+                                ward=ward,
+                                page= page,
+                                id=str(id),
+                                file=src
+                            )
+                        if  len(driver.window_handles) >1:
+                            for window_handle in range (1, len(driver.window_handles)):
+                                close_file(driver=driver, id=window_handle)
+                        driver.window_handles = [driver.window_handles[0]]
+                        
+                    except:
+                        pass
+            except:
+                pass
+            back = driver.find_element(By.ID, value="btnCloseViewDetail")
+            back.click()
+            item = wait_element(driver=driver, timeout= 15, key="item-hosodiachinh", by="class")
+        page+=1
+        next = driver.find_element(By.NAME, value="next")   
+        next.click()    
 
     return "ok"
