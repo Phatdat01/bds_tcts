@@ -2,9 +2,7 @@ import os
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from pathlib import Path
 from typing import Tuple, List
-from load_web import load, run
 
 def load_credential() -> List[str]:
     list_txt = []
@@ -122,14 +120,12 @@ def process_theme(win: tk.Tk,
 
     ## Button
     load_action = tk.Button(
-        win, text = "Load", bg = "Yellow", font = "25", width = 7, cursor="hand2",
-        command = lambda: load() 
+        win, text = "Load", bg = "Yellow", font = "25", width = 7, cursor="hand2"
     )
     load_action.grid(row=7, column=3, pady=10)
 
     run_action = tk.Button(
-        win, text = "Start", bg = "Red", state= "disabled", font = "25", width = 7,
-        command = lambda: run() 
+        win, text = "Start", bg = "Red", state= "disabled", font = "25", width = 7
     )
     run_action.grid(row=7, column=4, pady=10)
 
