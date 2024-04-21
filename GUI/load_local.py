@@ -130,3 +130,7 @@ def process_theme(win: tk.Tk,
     run_action.grid(row=7, column=4, pady=10)
 
     return user_name, password, web, path, page, ward, time_delay, load_action, run_action
+
+def disable_run(run_action):
+    run_action['state'] = 'disabled'
+    run_action['bg'] = "Red"

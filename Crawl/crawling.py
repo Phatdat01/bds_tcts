@@ -90,3 +90,6 @@ def load_pages(driver: WebDriver, cre: json) -> int:
     pages = wait_element(driver=driver,timeout=30,key="total",by="name")
     pages = driver.find_element(By.NAME, value="total").text
     return int(pages)
+
+def access(driver: WebDriver, cre: json):
+    return "ok"

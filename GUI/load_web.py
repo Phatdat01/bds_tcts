@@ -6,7 +6,7 @@ from tkinter import messagebox
 
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from Crawl.crawl import access_to_ward
+from Crawl.crawl import access_to_ward, crawl
 
 DOWNLOAD_PATH = str(Path.home() / "Downloads")
 
@@ -40,5 +40,23 @@ def load(
     except:
         messagebox.showerror("showerror", info)
 
-def run():
-    print("ok")
+def run(
+        ward: str,
+        time_delay: int,
+        page: ttk.Combobox,
+        path: str= None
+    ):
+
+    cre ={
+        "path": path,
+        "page": int(page.get()),
+        "last_page": int(page['value'][-1]),
+        "ward": ward,
+        "time_delay": time_delay
+    }
+    crawl(
+        driver=driver,
+        cre=cre
+    )
+
+    

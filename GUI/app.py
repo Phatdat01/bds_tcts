@@ -1,7 +1,8 @@
 import tkinter as tk
 
 from GUI.load_web import load, run
-from GUI.load_local import load_credential, close_application, process_theme, select_save_path
+from GUI.load_local import load_credential, close_application, \
+    process_theme, select_save_path, disable_run
 
 URL_PATH = "https://khh.mplis.gov.vn/dc/HoSoDiaChinh"
 WEB_LIST = ["chrome","edge"]
@@ -38,7 +39,14 @@ def app():
         page=page, run_action=run_action
     )
 
-    run_action['command'] = lambda: run()
+    run_action['command'] = lambda: [
+        run(
+            path=path.get(),ward=ward.get(),
+            time_delay=int(time_delay.get()),
+            page=page
+        ),
+        disable_run(run_action)
+    ]
 
     win.bind("<Control-KeyPress-q>", lambda event: close_application(win=win))
     win.eval('tk::PlaceWindow . center')
