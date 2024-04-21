@@ -1,4 +1,0 @@
-selenium
-tk
-webdriver_manager
-pandas

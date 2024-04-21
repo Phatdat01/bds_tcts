@@ -25,14 +25,18 @@ def load(
         "ward": ward,
         "time_delay": time_delay
     }
-
-    driver, info = access_to_ward(cre = cre)
+    try:
+        if driver:
+            driver, info = access_to_ward(cre=cre, reload=True, driver=driver)
+    except:
+        driver, info = access_to_ward(cre = cre)
     try:
         page['values'] = list(range(1,info+1))
         page.current(0)
         page['state'] = 'normal'
         run_action['state'] = 'normal'
         run_action['bg'] = 'Green'
+        run_action['cursor'] = 'hand2'
     except:
         messagebox.showerror("showerror", info)
         driver.quit()
@@ -51,9 +55,11 @@ def run(
         "ward": ward,
         "time_delay": time_delay
     }
-    crawl(
-        driver=driver,
-        cre=cre
-    )
-
+    try:
+        crawl(
+            driver=driver,
+            cre=cre
+        )
+    except Exception as e:
+        messagebox.showerror("showerror", e)
     
