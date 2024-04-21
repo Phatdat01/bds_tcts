@@ -16,8 +16,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
-DOWNLOAD_PATH = str(Path.home() / "Downloads")
-
 def load_json() -> json:
     fi = open("credential.json",encoding="UTF-8")
     cre = json.load(fi)
@@ -34,9 +32,16 @@ def load_edge(download_path: str):
     driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()), options=options)
     return driver
 
-def load_chrome():
+def load_chrome(download_path: str):
     service = Service()
     options = webdriver.ChromeOptions()
+
+    prefs = {
+        'download.default_directory': download_path,
+        'download.prompt_for_download': False,
+        'download.directory_upgrade': True
+    }
+    options.add_experimental_option('prefs', prefs)
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
@@ -61,15 +66,13 @@ def wait_element(driver: WebDriver, timeout: int, key: str, by: str) -> WebEleme
         return []
     
 
-def open_web():
-    cre= load_json()
-    if cre["download_path"] == "" or "chrome" in cre["tool"].lower():
-        driver = load_chrome()
-        cre["download_path"] = DOWNLOAD_PATH
+def open_web(cre: json):
+    if "chrome" in cre["web"].lower():
+        driver = load_chrome(download_path= cre["path"])
     else:
-        driver = load_edge(download_path= cre["download_path"])
+        driver = load_edge(download_path= cre["path"])
     driver.get(cre["url"])
-    return driver, cre
+    return driver
 
 def login(driver: WebDriver, cre: json):
     name = wait_element(driver=driver, timeout=10,key="username",by="name")
@@ -79,12 +82,11 @@ def login(driver: WebDriver, cre: json):
     login = wait_element(driver=driver, timeout=10,key="login100-form-btn",by="class")
     login.click()
 
-def access(driver: WebDriver, cre: json) -> WebDriver:
-    items = wait_element(driver=driver, timeout=20, key="item-hosodiachinh", by="class")
-    items = driver.find_elements(By.CLASS_NAME, value="item-hosodiachinh")
-    for item in items:
-        item_click = item.find_element(By.CLASS_NAME, value="title")
-        item_click.click()
-        files = wait_element(driver=driver, timeout=20,key="group-hosoquet.list-group",by="class")
-        files = driver.find_elements(By.CLASS_NAME, value="group-hosoquet.list-group")
-        return files
+def choose_ward(driver: WebDriver):
+    print()
+
+def load_pages(driver: WebDriver, cre: json) -> int:
+    time.sleep(6.7)
+    pages = wait_element(driver=driver,timeout=30,key="total",by="name")
+    pages = driver.find_element(By.NAME, value="total").text
+    return int(pages)
