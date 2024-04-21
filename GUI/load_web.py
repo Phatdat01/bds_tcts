@@ -1,5 +1,3 @@
-import json
-from pathlib import Path
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -7,8 +5,6 @@ from tkinter import messagebox
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from Crawl.crawl import access_to_ward, crawl
-
-DOWNLOAD_PATH = str(Path.home() / "Downloads")
 
 def load(
         name: str, pw: str, 
@@ -39,6 +35,7 @@ def load(
         run_action['bg'] = 'Green'
     except:
         messagebox.showerror("showerror", info)
+        driver.quit()
 
 def run(
         ward: str,
