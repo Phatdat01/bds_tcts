@@ -1,8 +1,5 @@
-import os
 import json
 import time
-import shutil
-from pathlib import Path
 from typing import List, Tuple
 
 from selenium import webdriver
@@ -15,6 +12,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.edge.service import Service as EdgeService
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+from Crawl.storing import change_id, get_by_latest_file, move_to_des
 
 def load_json() -> json:
     fi = open("credential.json",encoding="UTF-8")
@@ -86,7 +85,114 @@ def choose_ward(driver: WebDriver):
     print()
 
 def load_pages(driver: WebDriver, cre: json) -> int:
-    time.sleep(6.7)
-    pages = wait_element(driver=driver,timeout=30,key="total",by="name")
-    pages = driver.find_element(By.NAME, value="total").text
-    return int(pages)
+    num = 0
+    while True:
+        try:
+            time.sleep(6.7)
+            pages = wait_element(driver=driver,timeout=30,key="total",by="name")
+            pages = driver.find_element(By.NAME, value="total").text
+            return int(pages)
+        except:
+            num+=1
+            if num>5:
+                return int(pages)
+
+def close_file(driver: WebDriver, id: int = -1):
+    try:
+        driver.switch_to.window(driver.window_handles[id])
+        driver.execute_script("window.close();")
+        driver.switch_to.window(driver.window_handles[0])
+    except Exception as e:
+        print(f"Error in process_file: {e}")
+
+
+def download_file(args: List[Tuple[int, WebElement]], driver: WebDriver):
+    handle_index, file = args
+    try:
+        try:
+            driver.switch_to.window(driver.window_handles[handle_index])
+        except:
+            driver.switch_to.window(driver.window_handles[1])
+        save = wait_element(driver=driver,timeout=20,key="body",by="tag")
+        save.send_keys(Keys.CONTROL + 's')
+        driver.switch_to.window(driver.window_handles[0])
+    except Exception as e:
+        print(f"Error in process_file: {e}")
+
+
+def open_file(args, driver: WebDriver):
+    handle_index, file = args
+    try:
+        link = file.get_attribute("nodeid")
+        driver.execute_script("window.open('');")
+        driver.switch_to.window(driver.window_handles[handle_index])
+        driver.get(f"https://khh.mplis.gov.vn/dc/PdfViewer?fileId={link}")
+        driver.switch_to.window(driver.window_handles[0])
+    except Exception as e:
+        print(f"Error in process_file: {e}")
+        
+
+def access(driver: WebDriver, cre: json):
+    ## Click to each content
+    root = cre["path"].replace("\\", "\\\\")
+    ward = cre["ward"]
+    page = cre["page"]
+    items = wait_element(driver=driver, timeout= 30, key="item-hosodiachinh", by="class")
+    items = driver.find_elements(By.CLASS_NAME, value="item-hosodiachinh")
+
+    start = change_id(id=0,root=root, ward=ward, page=page)
+    for id in range(start, len(items)):
+        items[id].find_element(By.CLASS_NAME, value="title").click()
+        time.sleep(2.7)
+        try:
+            ## Click to each file
+            files = wait_element(driver=driver, timeout= 10, key="list-group-item.file-hosoquet", by="class")
+            if files:
+                try:
+                    files = driver.find_elements(By.CLASS_NAME, value="list-group-item.file-hosoquet")
+                    files_with_handles = list(enumerate(files, start=1))
+
+                    ## Open
+                    for files_with_handle in files_with_handles:
+                        open_file(args=files_with_handle,driver=driver)
+                    time.sleep(cre['time_delay'])
+                    
+                    ## Download
+                    for files_with_handle in files_with_handles:
+                        download_file(args=files_with_handle,driver=driver)
+                    time.sleep(1)
+
+                    # close web
+                    for files_with_handle in files_with_handles:   
+                        close_file(driver=driver)
+                    time.sleep(2)
+
+
+                    srcs = get_by_latest_file(num=len(files), download_path=cre["path"])
+
+                    id = change_id(id=id, root=root, ward=ward,page=page)
+                    # move
+                    for src in srcs:
+                    
+                        move_to_des(
+                            root=root,
+                            ward=ward,
+                            page= page,
+                            id=str(id),
+                            file=src
+                        )
+                    if  len(driver.window_handles) >1:
+                        for window_handle in range (1, len(driver.window_handles)):
+                            close_file(driver=driver, id=window_handle)
+                    driver.window_handles = [driver.window_handles[0]]
+                    
+                except:
+                    pass
+        except:
+            pass
+        back = driver.find_element(By.ID, value="btnCloseViewDetail")
+        back.click()
+        item = wait_element(driver=driver, timeout= 15, key="item-hosodiachinh", by="class")
+        
+
+    return "ok"
