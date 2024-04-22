@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import Image, ImageTk
 
 from GUI.load_web import load, run
 from GUI.load_local import load_credential, close_application, \
@@ -11,7 +12,9 @@ WARD_LIST = ["thị trấn Vạn Giã","xã Vạn Bình","xã Vạn Hưng","xã 
 
 def app():
     win = tk.Tk()
+    win.title("Hồ Sơ Địa Chính")
     win.resizable(width=False, height=False)
+    win.iconbitmap("Images/icon.ico")
 
     user_name, password, web, path, page, ward, time_delay, load_action, run_action = process_theme(win=win, web_list = WEB_LIST, ward_list = WARD_LIST)
     name_text, pw_text, url_text = load_credential()

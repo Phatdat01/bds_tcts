@@ -30,6 +30,7 @@ def select_save_path(item: ttk.Entry, value: str = None):
         save_path = value
     else:
         save_path = filedialog.askdirectory()
+        save_path = save_path.replace("/", "\\")
     item.delete(0, tk.END)
     item.insert(tk.END, save_path)
 
