@@ -105,6 +105,18 @@ def load_pages(driver: WebDriver, cre: json) -> int:
             if num>5:
                 return int(pages)
 
+def change_to_current_page(driver: WebDriver, page: str):
+    time.sleep(1.7)
+    current = wait_element(driver=driver, timeout=20,key="current",by="name")
+    current.click()
+    time.sleep(2)
+    current.clear()
+    time.sleep(2)
+    current.send_keys(page)
+    time.sleep(2)
+    current.send_keys(Keys.ENTER)
+    time.sleep(2.3)
+
 def close_file(driver: WebDriver, id: int = -1):
     try:
         driver.switch_to.window(driver.window_handles[id])
@@ -145,6 +157,7 @@ def access(driver: WebDriver, cre: json):
     root = cre["path"].replace("\\", "\\\\")
     ward = cre["ward"]
     page = cre["page"]
+    change_to_current_page(driver=driver, page=page)
     while page != cre["last_page"]:
         time.sleep(3)
         items = wait_element(driver=driver, timeout= 30, key="item-hosodiachinh", by="class")

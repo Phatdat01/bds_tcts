@@ -25,21 +25,10 @@ def app():
         if url_text =="":
             url_text = URL_PATH
 
-    cre = {
-        "name": user_name.get(),
-        "pw": password.get(),
-        "url": url_text,
-        "web": web.get(),
-        "page": int(page.get()),
-        "ward": ward.get(),
-        "time_delay": int(time_delay.get())
-    }
-
     load_action['command']= lambda: load(
         name=user_name.get(), pw = password.get(), 
         url=url_text, web= web.get(),
         path=path.get(),ward=ward.get(),
-        time_delay=int(time_delay.get()),
         page=page, run_action=run_action
     )
 
