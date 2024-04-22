@@ -10,7 +10,8 @@ def load(
         name: str, pw: str, 
         url: str, web: str,
         path: str,ward: str,
-        page: ttk.Combobox, run_action: tk.Button
+        page: ttk.Combobox,
+        run_action: tk.Button
     ) -> WebDriver:
 
     global driver
