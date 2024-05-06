@@ -23,7 +23,7 @@ def load(
         "path": path,
         "ward": ward
     }
-    if cre["name"]== "" or cre == "":
+    if cre["name"]== "" or cre["pw"] == "":
         messagebox.showerror("showerror", "User Name or Password?")
     else:
         try:
