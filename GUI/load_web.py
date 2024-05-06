@@ -10,8 +10,8 @@ def load(
         name: str, pw: str, 
         url: str, web: str,
         path: str,ward: str,
-        time_delay: int,
-        page: ttk.Combobox, run_action: tk.Button
+        page: ttk.Combobox,
+        run_action: tk.Button
     ) -> WebDriver:
 
     global driver
@@ -21,25 +21,26 @@ def load(
         "url": url,
         "web": web,
         "path": path,
-        "page": int(page.get()),
-        "ward": ward,
-        "time_delay": time_delay
+        "ward": ward
     }
-    try:
-        if driver:
-            driver, info = access_to_ward(cre=cre, reload=True, driver=driver)
-    except:
-        driver, info = access_to_ward(cre = cre)
-    try:
-        page['values'] = list(range(1,info+1))
-        page.current(0)
-        page['state'] = 'normal'
-        run_action['state'] = 'normal'
-        run_action['bg'] = 'Green'
-        run_action['cursor'] = 'hand2'
-    except:
-        messagebox.showerror("showerror", info)
-        driver.quit()
+    if cre["name"]== "" or cre == "":
+        messagebox.showerror("showerror", "User Name or Password?")
+    else:
+        try:
+            if driver:
+                driver, info = access_to_ward(cre=cre, reload=True, driver=driver)
+        except:
+            driver, info = access_to_ward(cre = cre)
+        try:
+            page['values'] = list(range(1,info+1))
+            page.current(0)
+            page['state'] = 'normal'
+            run_action['state'] = 'normal'
+            run_action['bg'] = 'Green'
+            run_action['cursor'] = 'hand2'
+        except:
+            messagebox.showerror("showerror", info)
+            driver.quit()
 
 def run(
         ward: str,
