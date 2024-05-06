@@ -7,7 +7,7 @@ from GUI.load_local import load_credential, close_application, \
 
 URL_PATH = "https://khh.mplis.gov.vn/dc/HoSoDiaChinh"
 WEB_LIST = ["chrome","edge"]
-WARD_LIST = ["thị trấn Vạn Giã","xã Vạn Bình","xã Vạn Hưng","xã Vạn Khánh","xã Vạn Phú","xã Vạn Phước",
+WARD_LIST = ["thị trấn Vạn Giã","xã Vạn Bình","xã Vạn Hưng","xã Vạn Khánh","xã Vạn Long", "xã Vạn Lương", "xã Vạn Phú","xã Vạn Phước",
             "xã Vạn Thạnh","xã Vạn Thắng","xã Vạn Thọ","xã Xuân Sơn","xã Đại Lãnh"]
 
 def app():
@@ -22,8 +22,8 @@ def app():
     if name_text:
         select_save_path(item=user_name,value=name_text)
         select_save_path(item=password,value=pw_text)
-        if url_text =="":
-            url_text = URL_PATH
+    if url_text =="":
+        url_text = URL_PATH
 
     load_action['command']= lambda: load(
         name=user_name.get(), pw = password.get(), 
